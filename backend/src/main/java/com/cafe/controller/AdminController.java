@@ -94,6 +94,7 @@ public class AdminController {
     Branch existing = branchRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     existing.setName(branch.getName()); existing.setAddress(branch.getAddress());
     existing.setPhone(branch.getPhone()); existing.setCode(branch.getCode());
+    existing.setMapUrl(branch.getMapUrl());
     existing.setLatitude(branch.getLatitude()); existing.setLongitude(branch.getLongitude());
     existing.setActive(branch.isActive());
     return branchRepo.save(existing);

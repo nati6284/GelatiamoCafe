@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import { I18nProvider, useI18n } from './i18n'
-import { locations, menuData } from './data'
+import { menuData } from './data'
 import { api } from './api'
 
 // Import Pages
@@ -68,10 +68,14 @@ function AppShell() {
   const [selectedItem, setSelectedItem] = useState(null)
   const [selectedBranch, setSelectedBranch] = useState(null)
   const [menuItems, setMenuItems] = useState([])
+  const [branches, setBranches] = useState([])
   const [loading, setLoading] = useState(true)
   const staticItems = useMemo(() => convertMenuToArray(), [])
-  const branches = locations.map((loc, i) => ({...loc, id: i + 1}))
   const location = useLocation()
+
+  useEffect(() => {
+    api.branches().then(setBranches).catch(console.error)
+  }, [])
   
   // Load menu based on branch selection
   useEffect(() => {
