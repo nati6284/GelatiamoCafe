@@ -13,6 +13,12 @@ import ContactPage from './pages/ContactPage'
 import QRPage from './pages/QRPage'
 import AdminPage from './pages/AdminPage'
 import FeedbackPage from './pages/FeedbackPage'
+import { Navigate } from 'react-router-dom'
+
+function AdminRoute({ children }) {
+  const isAdmin = !!sessionStorage.getItem('adminToken')
+  return isAdmin ? children : <Navigate to="/admin" replace />
+}
 
 // Import Components
 import Navbar from './components/Navbar'
@@ -115,7 +121,7 @@ function AppShell() {
           <Route path="/locations" element={<LocationsPage branches={branches}/>}/>
           <Route path="/contact" element={<ContactPage selectedBranch={selectedBranch}/>}/>
           <Route path="/feedback" element={<FeedbackPage/>}/>
-          <Route path="/qr" element={<QRPage/>}/>
+          <Route path="/qr" element={<AdminRoute><QRPage/></AdminRoute>}/>
           <Route path="/admin" element={<AdminPage/>}/>
           <Route path="*" element={
             <section className="section">

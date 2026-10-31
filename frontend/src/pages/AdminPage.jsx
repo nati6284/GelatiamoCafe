@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Upload, Link as LinkIcon, LogOut, Lock, QrCode, Dol
 import { api } from '../api'
 import { API_BASE } from '../config'
 import { CATEGORY_ORDER } from '../data'
+import { QRPrintCard } from '../pages/QRPage'
 
 // ── Login Screen ──────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
@@ -214,17 +215,6 @@ export default function AdminPage() {
     reader.readAsDataURL(file)
   }
 
-  const getQRUrl = (branchCode) => {
-    const menuUrl = `${window.location.origin}/menu?branch=${branchCode}`
-    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(menuUrl)}`
-  }
-
-  const downloadQR = (branchCode, branchName) => {
-    const link = document.createElement('a')
-    link.href = getQRUrl(branchCode)
-    link.download = `${branchName.replace(/\s+/g, '_')}_QR.png`
-    link.click()
-  }
 
   // ── Branch handlers ──────────────────────────────────────────────────────
   const handleAddBranch = () => {
@@ -458,26 +448,9 @@ export default function AdminPage() {
             ) : branches.filter(b => b.active).length === 0 ? (
               <p className="empty-state">No active branches. Add branches first.</p>
             ) : (
-              <div className="qr-grid">
+              <div className="qr-print-grid">
                 {branches.filter(b => b.active).map(branch => (
-                  <div key={branch.id} className="qr-card">
-                    <h3>{branch.name}</h3>
-                    <p className="qr-address">{branch.address}</p>
-                    <div className="qr-code-wrapper">
-                      <img
-                        src={getQRUrl(branch.code)}
-                        alt={`QR for ${branch.name}`}
-                        className="qr-image"
-                      />
-                    </div>
-                    <div className="qr-info">
-                      <p><strong>Branch Code:</strong> {branch.code}</p>
-                      <p className="qr-url">{window.location.origin}/menu?branch={branch.code}</p>
-                    </div>
-                    <button className="button" onClick={() => downloadQR(branch.code, branch.name)}>
-                      Download QR Code
-                    </button>
-                  </div>
+                  <QRPrintCard key={branch.id} branch={branch} />
                 ))}
               </div>
             )}
