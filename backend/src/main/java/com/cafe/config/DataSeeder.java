@@ -17,7 +17,7 @@ public class DataSeeder {
    // Create branches from locations in data.js
    if(branchRepo.count()==0){
     branchRepo.save(new Branch("Gelatiamo Addis Bole Bulbula", "Bole Bulbula, Addis Ababa", "+251 911 234 567", "BOLE_BULBULA", "https://maps.app.goo.gl/NE4ENNvc1zCUpEdp7"));
-    branchRepo.save(new Branch("Gelatiamo Addis Bole Bulbula93", "Bole Medhanialem, Addis Ababa", "+251 911 345 678", "BOLE_BULBULA93", "https://maps.app.goo.gl/tasRkLQyknbL5UEj7"));
+    branchRepo.save(new Branch("Gelatiamo Addis Bole c", "Bole Bulbula93 , Addis Ababa", "+251 911 345 678", "BOLE_BULBULA93", "https://maps.app.goo.gl/tasRkLQyknbL5UEj7"));
     branchRepo.save(new Branch("Gelatiamo Addis summit72", "Summit, Addis Ababa", "+251 995 280 096", "SUMMIT72", "https://maps.app.goo.gl/j1MmudDT5giaL24k7"));
     branchRepo.save(new Branch("Gelatiamo Addis Mekanisa", "Mekanisa, Addis Ababa", "+251 911 567 890", "MEKANISA", "https://maps.app.goo.gl/UoKbsuhbjrRHaHx59"));
     branchRepo.save(new Branch("Gelatiamo Addis Bole Medhanialem", "Bole, Addis Ababa", "+251 911 678 901", "BOLE_MEDHANIALEM", "https://maps.app.goo.gl/zfezNT4CwfF6LnM68"));
