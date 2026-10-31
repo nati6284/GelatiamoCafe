@@ -1,19 +1,10 @@
 import { useEffect, useState } from 'react'
 import { MapPin } from 'lucide-react'
-import { api } from '../api'
 
-export default function BranchSelector({ selectedBranch, onSelectBranch, forceOpen, onClose }) {
-  const [branches, setBranches] = useState([])
+export default function BranchSelector({ selectedBranch, onSelectBranch, branches = [], forceOpen, onClose }) {
   const [show, setShow] = useState(false)
-  
-  useEffect(() => {
-    const load = () => api.branches().then(setBranches).catch(console.error)
-    load()
-    window.addEventListener('focus', load)
-    return () => window.removeEventListener('focus', load)
-  }, [])
-  
-  // Auto-detect branch from URL query parameter, or default to Bole Medhanialem
+
+  // Set default branch once branches are available
   useEffect(() => {
     if (branches.length === 0) return
     const params = new URLSearchParams(window.location.search)
@@ -22,36 +13,33 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, forceOp
       const branch = branches.find(b => b.code === branchCode.toUpperCase())
       if (branch) { onSelectBranch(branch); return }
     }
-    // If a branch is already selected, sync it with the fresh data (picks up name changes)
+    // Sync selected branch with fresh data (picks up name/address changes)
     if (selectedBranch) {
       const fresh = branches.find(b => b.id === selectedBranch.id)
       if (fresh && fresh.name !== selectedBranch.name) onSelectBranch(fresh)
       return
     }
-    // Set default branch if none selected yet
+    // Default to BOLE_MEDHANIALEM or first active
     const def = branches.find(b => b.code === 'BOLE_MEDHANIALEM') || branches.find(b => b.active)
     if (def) onSelectBranch(def)
   }, [branches])
-  
-  // Handle force open from navbar
+
   useEffect(() => {
-    if (forceOpen) {
-      setShow(true)
-    }
+    if (forceOpen) setShow(true)
   }, [forceOpen])
-  
+
   const handleClose = () => {
     setShow(false)
     if (onClose) onClose()
   }
-  
+
   return (
     <div className="branch-selector">
       <button className="branch-button" onClick={() => setShow(!show)}>
         <MapPin size={16} />
         {selectedBranch ? selectedBranch.name : 'Select Branch'}
       </button>
-      
+
       {show && (
         <>
           <div className="branch-overlay" onClick={handleClose} />
@@ -62,10 +50,7 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, forceOp
                 <button
                   key={branch.id}
                   className={`branch-option ${selectedBranch?.id === branch.id ? 'active' : ''}`}
-                  onClick={() => {
-                    onSelectBranch(branch)
-                    handleClose()
-                  }}
+                  onClick={() => { onSelectBranch(branch); handleClose() }}
                 >
                   <div className="branch-info">
                     <strong>{branch.name}</strong>

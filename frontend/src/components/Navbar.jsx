@@ -5,7 +5,7 @@ import { useI18n } from '../i18n'
 import { cafeConfig } from '../config'
 import BranchSelector from './BranchSelector'
 
-export default function Navbar({ selectedBranch, onSelectBranch }) {
+export default function Navbar({ selectedBranch, onSelectBranch, branches }) {
   const {t, lang, setLang} = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   
@@ -25,7 +25,7 @@ export default function Navbar({ selectedBranch, onSelectBranch }) {
       
       <nav className={menuOpen ? 'main-nav open' : 'main-nav'}>
          <div className="mobile-branch-wrapper">
-          <BranchSelector selectedBranch={selectedBranch} onSelectBranch={(b) => { onSelectBranch(b); setMenuOpen(false) }} />
+          <BranchSelector selectedBranch={selectedBranch} onSelectBranch={(b) => { onSelectBranch(b); setMenuOpen(false) }} branches={branches} />
         </div>
         <NavLink to="/" onClick={() => setMenuOpen(false)}>{t('home')}</NavLink>
         <NavLink to="/menu" onClick={() => setMenuOpen(false)}>{t('menu')}</NavLink>
@@ -40,7 +40,7 @@ export default function Navbar({ selectedBranch, onSelectBranch }) {
       </nav>
       
       <div className="header-actions">
-        <BranchSelector selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
+        <BranchSelector selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} branches={branches} />
         <button 
           className="lang-toggle" 
           onClick={() => setLang(lang === 'en' ? 'am' : 'en')}

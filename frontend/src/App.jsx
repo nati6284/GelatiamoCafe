@@ -67,7 +67,7 @@ function AppShell() {
   const [toast, setToast] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
   const [selectedBranch, setSelectedBranch] = useState(null)
-  const [menuItems, setMenuItems] = useState([])
+  const [menuItems, setMenuItems] = useState(null) // null = not yet loaded
   const [branches, setBranches] = useState([])
   const [loading, setLoading] = useState(true)
   const staticItems = useMemo(() => convertMenuToArray(), [])
@@ -85,20 +85,17 @@ function AppShell() {
         .then(setMenuItems)
         .catch(err => {
           console.error('Failed to load branch menu:', err)
-          setMenuItems(staticItems)
         })
         .finally(() => setLoading(false))
     } else {
-      // Load default menu from API or fallback to static
       api.menu()
         .then(setMenuItems)
         .catch(err => {
           console.error('Failed to load menu:', err)
-          setMenuItems(staticItems)
         })
         .finally(() => setLoading(false))
     }
-  }, [selectedBranch, staticItems])
+  }, [selectedBranch])
   
   // Scroll to top on route change
   useEffect(() => {
@@ -112,11 +109,11 @@ function AppShell() {
     return () => clearTimeout(id)
   }, [toast])
   
-  const items = menuItems.length > 0 ? menuItems : staticItems
+  const items = menuItems ?? staticItems
   
   return (
     <div className={lang === 'am' ? 'app amharic' : 'app'}>
-      <Navbar selectedBranch={selectedBranch} onSelectBranch={setSelectedBranch} />
+      <Navbar selectedBranch={selectedBranch} onSelectBranch={setSelectedBranch} branches={branches} />
 
       <main>
         <Routes>
