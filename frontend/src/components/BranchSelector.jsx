@@ -7,7 +7,10 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, forceOp
   const [show, setShow] = useState(false)
   
   useEffect(() => {
-    api.branches().then(setBranches).catch(console.error)
+    const load = () => api.branches().then(setBranches).catch(console.error)
+    load()
+    window.addEventListener('focus', load)
+    return () => window.removeEventListener('focus', load)
   }, [])
   
   // Auto-detect branch from URL query parameter, or default to Bole Medhanialem
@@ -19,11 +22,15 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, forceOp
       const branch = branches.find(b => b.code === branchCode.toUpperCase())
       if (branch) { onSelectBranch(branch); return }
     }
-    // Set default branch if none selected yet
-    if (!selectedBranch) {
-      const def = branches.find(b => b.code === 'BOLE_MEDHANIALEM') || branches.find(b => b.active)
-      if (def) onSelectBranch(def)
+    // If a branch is already selected, sync it with the fresh data (picks up name changes)
+    if (selectedBranch) {
+      const fresh = branches.find(b => b.id === selectedBranch.id)
+      if (fresh && fresh.name !== selectedBranch.name) onSelectBranch(fresh)
+      return
     }
+    // Set default branch if none selected yet
+    const def = branches.find(b => b.code === 'BOLE_MEDHANIALEM') || branches.find(b => b.active)
+    if (def) onSelectBranch(def)
   }, [branches])
   
   // Handle force open from navbar
