@@ -8,7 +8,7 @@ public class MenuItem {
   @NotBlank @Size(max=500) private String description;
   @NotBlank @Size(max=60) private String category;
   @NotNull @DecimalMin("0.0") private Double price;
-  @Size(max=1000) private String image;
+  @Column(columnDefinition="TEXT") private String image;
   private boolean available = true;
   private boolean popular = false;
   public MenuItem() {}

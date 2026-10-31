@@ -3,6 +3,7 @@ import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { Check } from 'lucide-react'
 import { I18nProvider, useI18n } from './i18n'
 import { locations, menuData } from './data'
+import { api } from './api'
 
 // Import Pages
 import Home from './pages/Home'
@@ -11,6 +12,7 @@ import LocationsPage from './pages/LocationsPage'
 import ContactPage from './pages/ContactPage'
 import QRPage from './pages/QRPage'
 import AdminPage from './pages/AdminPage'
+import FeedbackPage from './pages/FeedbackPage'
 
 // Import Components
 import Navbar from './components/Navbar'
@@ -58,9 +60,35 @@ function AppShell() {
   const {lang} = useI18n()
   const [toast, setToast] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
-  const items = useMemo(() => convertMenuToArray(), [])
+  const [selectedBranch, setSelectedBranch] = useState(null)
+  const [menuItems, setMenuItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const staticItems = useMemo(() => convertMenuToArray(), [])
   const branches = locations.map((loc, i) => ({...loc, id: i + 1}))
   const location = useLocation()
+  
+  // Load menu based on branch selection
+  useEffect(() => {
+    setLoading(true)
+    if (selectedBranch) {
+      api.menuByBranch(selectedBranch.code)
+        .then(setMenuItems)
+        .catch(err => {
+          console.error('Failed to load branch menu:', err)
+          setMenuItems(staticItems)
+        })
+        .finally(() => setLoading(false))
+    } else {
+      // Load default menu from API or fallback to static
+      api.menu()
+        .then(setMenuItems)
+        .catch(err => {
+          console.error('Failed to load menu:', err)
+          setMenuItems(staticItems)
+        })
+        .finally(() => setLoading(false))
+    }
+  }, [selectedBranch, staticItems])
   
   // Scroll to top on route change
   useEffect(() => {
@@ -74,16 +102,19 @@ function AppShell() {
     return () => clearTimeout(id)
   }, [toast])
   
+  const items = menuItems.length > 0 ? menuItems : staticItems
+  
   return (
     <div className={lang === 'am' ? 'app amharic' : 'app'}>
-      <Navbar />
-      
+      <Navbar selectedBranch={selectedBranch} onSelectBranch={setSelectedBranch} />
+
       <main>
         <Routes>
-          <Route path="/" element={<Home items={items} onSelectItem={setSelectedItem}/>}/>
-          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem}/>}/>
+          <Route path="/" element={<Home items={items} onSelectItem={setSelectedItem} loading={loading}/>}/>
+          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem} loading={loading}/>}/>
           <Route path="/locations" element={<LocationsPage branches={branches}/>}/>
-          <Route path="/contact" element={<ContactPage/>}/>
+          <Route path="/contact" element={<ContactPage selectedBranch={selectedBranch}/>}/>
+          <Route path="/feedback" element={<FeedbackPage/>}/>
           <Route path="/qr" element={<QRPage/>}/>
           <Route path="/admin" element={<AdminPage/>}/>
           <Route path="*" element={

@@ -1,155 +1,186 @@
 package com.cafe.config;
 import com.cafe.model.MenuItem;
 import com.cafe.model.Branch;
+import com.cafe.model.BranchMenuPrice;
 import com.cafe.repository.MenuItemRepository;
 import com.cafe.repository.BranchRepository;
+import com.cafe.repository.BranchMenuPriceRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
+
 @Configuration
 public class DataSeeder {
- @Bean CommandLineRunner seedMenu(MenuItemRepository repo){return args->{
-  if(repo.count()==0){
-   // ICE CREAM
-   repo.save(new MenuItem("Scoop","Single scoop of ice cream","Ice Cream",315.0,"https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Stick","Ice cream on a stick","Ice Cream",378.0,"https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("1Kg Ice Cream","One kilogram of ice cream","Ice Cream",5040.0,"https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("1/2 Kg Ice Cream","Half kilogram of ice cream","Ice Cream",2520.0,"https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=900&q=85",true));
+ @Bean CommandLineRunner seedData(MenuItemRepository menuRepo, BranchRepository branchRepo, BranchMenuPriceRepository priceRepo){
+  return args->{
+   // Create branches from locations in data.js
+   if(branchRepo.count()==0){
+    branchRepo.save(new Branch("Gelatiamo Addis Bole Bulbula", "Bole Bulbula, Addis Ababa", "+251 911 234 567", "BOLE_BULBULA", "https://maps.app.goo.gl/NE4ENNvc1zCUpEdp7"));
+    branchRepo.save(new Branch("Gelatiamo Addis Bole Medhanialem", "Bole Medhanialem, Addis Ababa", "+251 911 345 678", "BOLE_MEDHANIALEM", "https://maps.app.goo.gl/tasRkLQyknbL5UEj7"));
+    branchRepo.save(new Branch("Gelatiamo Addis summit", "Summit, Addis Ababa", "+251 995 280 096", "SUMMIT", "https://maps.app.goo.gl/j1MmudDT5giaL24k7"));
+    branchRepo.save(new Branch("Gelatiamo Addis Mekanisa", "Mekanisa, Addis Ababa", "+251 911 567 890", "MEKANISA", "https://maps.app.goo.gl/UoKbsuhbjrRHaHx59"));
+    branchRepo.save(new Branch("Gelatiamo Addis Bole", "Bole, Addis Ababa", "+251 911 678 901", "BOLE", "https://maps.app.goo.gl/zfezNT4CwfF6LnM68"));
+   }
    
-   // TORTA
-   repo.save(new MenuItem("White / Black Torta","Classic white or black torta","Torta",2625.0,"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Caramel Torta","Rich caramel layered torta","Torta",2940.0,"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Chocolate Torta","Decadent chocolate torta","Torta",2940.0,"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Chocolate Torta","Premium special chocolate torta","Torta",3675.0,"https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=85",true));
+   // Seed menu items from data.js
+   if(menuRepo.count()==0){
+    // BREAKFAST (from data.js)
+    menuRepo.save(new MenuItem("Pancake With Syrup / Honey","Fluffy pancakes served with syrup or honey","Breakfast",400.0,"https://brokenovenbaking.com/wp-content/uploads/2023/01/cinnamon-honey-pancakes-8.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Fatira","Special traditional breakfast pastry","Breakfast",550.0,"https://i.pinimg.com/736x/51/51/cd/5151cdfe886623d344d8c1c78c574425.jpg",true,false));
+    menuRepo.save(new MenuItem("Chechebsa","Traditional Ethiopian breakfast","Breakfast",400.0,"https://i.pinimg.com/236x/59/eb/45/59eb45a02a8a4b20e3e15a3512d7afba.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Chechebsa","Special Ethiopian breakfast dish","Breakfast",500.0,"https://i.pinimg.com/1200x/c5/88/2f/c5882ff0f13a60838ab4c3805659c2d8.jpg",true,false));
+    menuRepo.save(new MenuItem("Ful","Traditional fava bean dish","Breakfast",300.0,"https://i.pinimg.com/1200x/cf/6b/8f/cf6b8fae41ec06f662c9f54297f8f365.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Ful","Special fava bean dish with extras","Breakfast",400.0,"https://i.pinimg.com/1200x/cf/6b/8f/cf6b8fae41ec06f662c9f54297f8f365.jpg",true,false));
+    menuRepo.save(new MenuItem("Avocado Toast","Fresh avocado on toast","Breakfast",400.0,"/Avocado Toast.jpg",true,false));
+    menuRepo.save(new MenuItem("French Toast","Classic French toast","Breakfast",400.0,"https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=900&q=85",true,false));
+    menuRepo.save(new MenuItem("Waffle With Syrup / Honey","Waffle served with syrup or honey","Breakfast",400.0,"https://i.pinimg.com/736x/ba/f8/3e/baf83e425cd0dcf317515063c640595c.jpg",true,false));
+    menuRepo.save(new MenuItem("Waffle With Single Scoop","Waffle with single scoop ice cream","Breakfast",840.0,"https://i.pinimg.com/736x/91/50/5e/91505e67300294db12327ca5e651caca.jpg",true,false));
+    menuRepo.save(new MenuItem("Waffle With Double Scoop","Waffle with double scoop ice cream","Breakfast",1155.0,"/Waffle With Double Scoop.jpg",true,true));
+    menuRepo.save(new MenuItem("Waffle With Chocolate","Waffle with chocolate sauce","Breakfast",400.0,"https://i.pinimg.com/1200x/4d/cc/6f/4dcc6ffb5ebe531a8954084a94e28c63.jpg",true,false));
+    menuRepo.save(new MenuItem("Brownie With Single Scoop","Chocolate brownie with single scoop","Breakfast",620.0,"https://i.pinimg.com/736x/11/7e/d7/117ed71e0aa075f34ef2dbb052a90f42.jpg",true,false));
+    menuRepo.save(new MenuItem("Brownie With Double Scoop","Chocolate brownie with double scoop","Breakfast",934.5,"https://i.pinimg.com/736x/77/22/e9/7722e966b5a62d97fc1cc02e64cb8271.jpg",true,false));
+    menuRepo.save(new MenuItem("Crepes with single scoop","French crepes with single scoop ice cream","Breakfast",840.0,"https://i.pinimg.com/736x/fd/19/70/fd19702a532542a753ac4cf155df80f7.jpg",true,false));
+    menuRepo.save(new MenuItem("Crepes with double scoop","French crepes with double scoop ice cream","Breakfast",1155.0,"https://i.pinimg.com/736x/0e/8c/0f/0e8c0f626cf9c49cc42cc5d5fa9e0924.jpg",true,false));
+    
+    // CAKES (from data.js)
+    menuRepo.save(new MenuItem("English Cake","Traditional English cake","Cake",120.0,"https://i.pinimg.com/1200x/3b/04/e5/3b04e58037c9a0aaae369b65b31857b3.jpg",true,false));
+    menuRepo.save(new MenuItem("Banana Cake","Moist banana cake","Cake",120.0,"https://i.pinimg.com/1200x/7a/cb/73/7acb73702255fbf5c1b18ac779a86693.jpg",true,false));
+    menuRepo.save(new MenuItem("Raisen Cake","Raisin cake","Cake",120.0,"https://i.pinimg.com/1200x/4a/ce/9c/4ace9cef71259ccf311311b810f90f26.jpg",true,false));
+    menuRepo.save(new MenuItem("Baklava","Sweet pastry with nuts","Cake",100.0,"https://i.pinimg.com/1200x/58/4c/06/584c06663ab602926b42c7467ae41df2.jpg",true,false));
+    menuRepo.save(new MenuItem("Boxegna","Traditional cake","Cake",220.0,"https://i.pinimg.com/1200x/d5/d0/af/d5d0af8e39437de63299ac0300954897.jpg",true,false));
+    menuRepo.save(new MenuItem("Bombolino","Italian doughnut","Cake",100.0,"https://savoringmoments.com/wp-content/uploads/2025/06/0_1_640_N-18-e1749086032174.webp",true,false));
+    menuRepo.save(new MenuItem("Donut","Fresh donut","Cake",150.0,"https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=85",true,false));
+    menuRepo.save(new MenuItem("Cheese Cake","Creamy cheesecake","Cake",350.0,"/Cheesecake.jpg",true,false));
+    menuRepo.save(new MenuItem("Orange Cake","Fresh orange cake","Cake",120.0,"https://i.pinimg.com/736x/94/6d/21/946d21216aa312e4745b4901520805da.jpg",true,false));
+    menuRepo.save(new MenuItem("Brownie Cake","Chocolate brownie cake","Cake",120.0,"https://i.pinimg.com/736x/f2/55/40/f2554052524946b15996540517849e67.jpg",true,false));
+    menuRepo.save(new MenuItem("Chocolate Cake","Rich chocolate cake","Cake",220.0,"https://i.pinimg.com/736x/b2/ca/0a/b2ca0abdd970a84a07197c027e0df331.jpg",true,false));
+    menuRepo.save(new MenuItem("White Forest","White chocolate forest cake","Cake",200.0,"https://i.pinimg.com/1200x/b4/9e/df/b49edf6b4e5616819c62fdc44ac72371.jpg",true,false));
+    menuRepo.save(new MenuItem("Black Forest","Classic black forest cake","Cake",200.0,"https://i.pinimg.com/1200x/18/00/4b/18004be4e9ca2f04d7ec0271c11773d1.jpg",true,false));
+    menuRepo.save(new MenuItem("Tiramisu","Classic Italian tiramisu","Cake",220.0,"/Tiramisu.jpg",true,true));
+    menuRepo.save(new MenuItem("Caramel","Caramel cake","Cake",220.0,"https://i.pinimg.com/736x/20/77/da/2077da0dc94dabf14b99e27af430a5fb.jpg",true,false));
+    menuRepo.save(new MenuItem("Millifoni","Layered pastry cake","Cake",220.0,"https://i.pinimg.com/1200x/36/c1/7e/36c17e4f5256c1bc4004d6bb89e3ae38.jpg",true,false));
+    
+    // ICE CREAM (from data.js)
+    menuRepo.save(new MenuItem("Scoop","Single scoop of gelato","Ice Cream",300.0,"/scoop2.jpg",true,true));
+    menuRepo.save(new MenuItem("Stick","Ice cream stick","Ice Cream",360.0,"/Stick2.jpg",true,true));
+    menuRepo.save(new MenuItem("1Kg Ice Cream","One kilogram ice cream","Ice Cream",4800.0,"/ice cream.jpg",true,false));
+    menuRepo.save(new MenuItem("1/2 Kg Ice Cream","Half kilogram ice cream","Ice Cream",2400.0,"/ice cream.jpg",true,false));
+    
+    // TORTA (from data.js)
+    menuRepo.save(new MenuItem("White / Black Torta","White or black chocolate torta","Torta",2500.0,"https://i.pinimg.com/1200x/c5/41/ab/c541ab5c06e002aa8cee98a44a8e0652.jpg",true,false));
+    menuRepo.save(new MenuItem("Caramel Torta","Caramel layered torta","Torta",2800.0,"https://i.pinimg.com/736x/53/c1/27/53c12783286ac0ecdcef6d2042491156.jpg",true,false));
+    menuRepo.save(new MenuItem("Chocolate Torta","Dark chocolate torta","Torta",2800.0,"https://i.pinimg.com/736x/1b/9c/95/1b9c959a5bc1a4115e2efa789a16c6e0.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Chocolate Torta","Premium special chocolate torta","Torta",3500.0,"https://i.pinimg.com/736x/e4/69/0e/e4690ed2422f22a485fc9e299eba9a46.jpg",true,false));
+    
+    // COLD DRINKS (from data.js)
+    menuRepo.save(new MenuItem("Soft Drink","Soft drinks","Cold Drinks",120.0,"https://i.pinimg.com/736x/de/f3/ea/def3ea43fc039d9739a6d094e0da3181.jpg",true,false));
+    menuRepo.save(new MenuItem("Water","Bottled water","Cold Drinks",60.0,"https://i.pinimg.com/736x/27/bb/0c/27bb0c25825e4095f69493eb6b81621a.jpg",true,false));
+    menuRepo.save(new MenuItem("Iced Latte","Cold iced latte","Cold Drinks",350.0,"https://i.pinimg.com/1200x/63/7b/a2/637ba2642e27ff4a357ae66ac23ac1db.jpg",true,false));
+    menuRepo.save(new MenuItem("Iced Coffee","Refreshing iced coffee","Cold Drinks",320.0,"https://i.pinimg.com/736x/c4/da/ba/c4daba7a9905f648f214d825ca298467.jpg",true,false));
+    menuRepo.save(new MenuItem("Spris Juice","Fresh mixed fruit juice","Cold Drinks",350.0,"https://i.pinimg.com/736x/63/1b/a9/631ba9539c5b9a369c94bd74687842d7.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Juice","Special juice blend","Cold Drinks",400.0,"https://i.pinimg.com/1200x/09/eb/90/09eb905ee0d6913aedaefaea13ed7fad.jpg",true,false));
+    menuRepo.save(new MenuItem("Strawberry Juice","Strawberry fruit juice","Cold Drinks",400.0,"https://i.pinimg.com/1200x/cc/4a/29/cc4a295077a12ac0c2e32e1313268bbc.jpg",true,false));
+    menuRepo.save(new MenuItem("Mango Juice","Mango fruit juice","Cold Drinks",420.0,"https://i.pinimg.com/1200x/34/09/9d/34099d3b61e04f41b9aac36b873dd0d4.jpg",true,false));
+    menuRepo.save(new MenuItem("Avocado Juice","Avocado fruit juice","Cold Drinks",300.0,"https://i.pinimg.com/736x/46/d8/15/46d815be729c637ceaf9be14d1f80a04.jpg",true,false));
+    menuRepo.save(new MenuItem("Mango Spris","Mango Spris juice","Cold Drinks",380.0,"https://www.cookedbyjulie.com/wp-content/uploads/2020/05/Ethiopian-drink-one.jpg",true,false));
+    menuRepo.save(new MenuItem("Strawberry Spris","Strawberry Spris juice","Cold Drinks",380.0,"https://i.pinimg.com/1200x/8f/2b/8a/8f2b8a440c5d4f7785f3675f4a07c355.jpg",true,false));
+    menuRepo.save(new MenuItem("Milk Shake","Creamy milkshake","Cold Drinks",450.0,"/Milkshake.jpg",true,true));
+    menuRepo.save(new MenuItem("Strawberry Shake","Fresh strawberry shake","Cold Drinks",400.0,"https://i.pinimg.com/736x/89/0c/be/890cbe02a1349a2a25d94e5bcac32e2b.jpg",true,false));
+    menuRepo.save(new MenuItem("Mango Shake","Tropical mango shake","Cold Drinks",400.0,"https://i.pinimg.com/736x/dc/f1/c6/dcf1c6d840fef506eb8b9a5ff9808850.jpg",true,false));
+    menuRepo.save(new MenuItem("Avocado Shake","Creamy avocado shake","Cold Drinks",400.0,"https://i.pinimg.com/736x/ca/d6/73/cad6730874353f055279a6ed4877ef51.jpg",true,false));
+    menuRepo.save(new MenuItem("Papaya Shake","Fresh papaya shake","Cold Drinks",400.0,"https://howdaily.com/wp-content/uploads/2017/07/vietnamese-papaya-smoothie.jpg",true,false));
+    menuRepo.save(new MenuItem("Ambo Water","Sparkling mineral water","Cold Drinks",130.0,"https://i.pinimg.com/736x/4a/ea/5a/4aea5afe688f76f76ae71c8a9204e664.jpg",true,false));
+    
+    // HOT DRINKS (from data.js)
+    menuRepo.save(new MenuItem("Macchiato","Espresso with foam","Hot Drinks",160.0,"https://i.pinimg.com/736x/0f/ec/c0/0fecc0e1f33a11d2c3e2df7248bd5254.jpg",true,false));
+    menuRepo.save(new MenuItem("Fasting Macchiato","Dairy-free macchiato","Hot Drinks",200.0,"https://i.pinimg.com/736x/79/be/b7/79beb78f6ccfed098556bc8b66d842e5.jpg",true,false));
+    menuRepo.save(new MenuItem("Tea","Fresh tea","Hot Drinks",80.0,"https://i.pinimg.com/736x/64/fc/57/64fc57ed558bca7e7a0cfc93c4348387.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Tea","Premium tea blend","Hot Drinks",200.0,"https://www.whatsoutaddis.com/wp-content/uploads/2020/07/IMG-0592.jpg",true,false));
+    menuRepo.save(new MenuItem("Flavored Tea","Flavored tea selection","Hot Drinks",100.0,"https://i.pinimg.com/736x/d9/fd/ee/d9fdeea3644726045e192493bae757d8.jpg",true,false));
+    menuRepo.save(new MenuItem("Coffee","Ethiopian coffee","Hot Drinks",140.0,"/Coffee.jpg",true,false));
+    menuRepo.save(new MenuItem("Milk","Hot steamed milk","Hot Drinks",120.0,"https://i.pinimg.com/736x/21/5a/e4/215ae416b9554314a09d9fc0bc6344fd.jpg",true,false));
+    menuRepo.save(new MenuItem("Tea With Coffee","Tea and coffee blend","Hot Drinks",160.0,"https://i.pinimg.com/736x/84/1d/91/841d91e3ac5b96db139c0e31b0070423.jpg",true,false));
+    menuRepo.save(new MenuItem("Coffee Latte","Coffee latte","Hot Drinks",180.0,"https://i.pinimg.com/736x/68/46/e6/6846e666e985014c73480135b52d958e.jpg",true,false));
+    menuRepo.save(new MenuItem("Cappuccino","Espresso with steamed milk","Hot Drinks",220.0,"https://i.pinimg.com/736x/f2/54/e5/f254e5c1cecdbe6480be0584f8d79c3c.jpg",true,false));
+    menuRepo.save(new MenuItem("Hot Chocolate","Rich hot chocolate","Hot Drinks",270.0,"https://i.pinimg.com/236x/8f/f0/29/8ff02991a1642a4665fa1d8a62f85eff.jpg",true,false));
+    menuRepo.save(new MenuItem("Espresso","Italian espresso","Hot Drinks",140.0,"https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",true,false));
+    menuRepo.save(new MenuItem("Americano Coffee","Espresso with water","Hot Drinks",170.0,"https://i.pinimg.com/736x/e9/89/ee/e989eeb048a4d59cf0393d4e9bf2b2b3.jpg",true,false));
+    menuRepo.save(new MenuItem("Machi","Traditional coffee drink","Hot Drinks",180.0,"https://i.pinimg.com/1200x/45/9a/fb/459afbc3f9000c8001ab06e67549b924.jpg",true,false));
+    menuRepo.save(new MenuItem("Caramel Macchiato","Caramel espresso drink","Hot Drinks",220.0,"https://i.pinimg.com/1200x/3c/a0/e6/3ca0e62d6ede348d8943868d21c36a9c.jpg",true,false));
+    menuRepo.save(new MenuItem("Affogato","Espresso over ice cream","Hot Drinks",400.0,"https://i.pinimg.com/236x/4e/12/0e/4e120edff403ca2df7731721688ddfac.jpg",true,false));
+    
+    // VIRGIN COCKTAIL (from data.js)
+    menuRepo.save(new MenuItem("Classic Mojito","Classic virgin mojito","Virgin Cocktail",300.0,"https://i.pinimg.com/736x/92/96/f1/9296f1c883062084feb677b98274fc0e.jpg",true,false));
+    menuRepo.save(new MenuItem("Mango Mojito","Mango flavored mojito","Virgin Cocktail",350.0,"https://i.pinimg.com/236x/d1/34/af/d134af1cb8552ef8312be6790c67f2a1.jpg",true,false));
+    menuRepo.save(new MenuItem("Strawberry Mojito","Strawberry flavored mojito","Virgin Cocktail",350.0,"/Strawberry Mojito.jpg",true,true));
+    menuRepo.save(new MenuItem("Blue Hawaiian Mojito","Blue Hawaiian flavored mojito","Virgin Cocktail",350.0,"https://i.pinimg.com/736x/8f/ec/5a/8fec5a95b636239e42c074aff0c2fea3.jpg",true,false));
+    menuRepo.save(new MenuItem("Gelatino Special Mojito","Special house mojito","Virgin Cocktail",400.0,"https://en.cocktail.fabbri1905.com/imgpub/2037280/600/0/fp_fdl_menta.webp",true,false));
+    menuRepo.save(new MenuItem("Virgin Espresso Mojito","Coffee flavored mojito","Virgin Cocktail",350.0,"https://i.pinimg.com/736x/53/27/d3/5327d3b6d15b1182b6ea5ac2c16fcced.jpg",true,false));
+    menuRepo.save(new MenuItem("Virgin Margarita Mojito","Margarita style mojito","Virgin Cocktail",350.0,"https://i.pinimg.com/736x/df/db/e4/dfdbe4f347971c75b7dd3fe36c0ba40e.jpg",true,false));
+    
+    // LUNCH (from data.js)
+    menuRepo.save(new MenuItem("Vegetable Pizza","Fresh vegetable pizza","Lunch",650.0,"https://i.pinimg.com/736x/d4/07/93/d4079368ea58b704533faf3ad98cf183.jpg",true,false));
+    menuRepo.save(new MenuItem("Margerita Pizza","Classic margerita pizza","Lunch",1000.0,"https://i.pinimg.com/736x/df/bc/51/dfbc51e79f8d81bae9ea8bb8572cea06.jpg",true,false));
+    menuRepo.save(new MenuItem("Chicken Pizza","Chicken topped pizza","Lunch",1100.0,"https://i.pinimg.com/736x/86/fe/5b/86fe5b8c18ac87d25f835c8fcc5fc6e3.jpg",true,false));
+    menuRepo.save(new MenuItem("Beef Pizza","Beef topped pizza","Lunch",1050.0,"https://i.pinimg.com/736x/0e/46/9f/0e469f6bf5e02d13a8c7d6e94d0cd77a.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Pizza","Special house pizza","Lunch",1250.0,"https://i.pinimg.com/1200x/1b/4c/ab/1b4cab813bcfabc1f9ac9aff9f54c3a1.jpg",true,false));
+    menuRepo.save(new MenuItem("Salami Pizza","Salami topped pizza","Lunch",1550.0,"https://i.pinimg.com/1200x/89/f4/d2/89f4d200ee1bef09958c6cde55adcfb4.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna With Cheese Pizza","Tuna and cheese pizza","Lunch",1150.0,"/Tuna With Cheese Pizza.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna Pizza","Tuna topped pizza","Lunch",800.0,"https://i.pinimg.com/1200x/99/e3/e3/99e3e3ee8df230507a876f14e7656ddf.jpg",true,false));
+    menuRepo.save(new MenuItem("Fasting Salad","Vegan salad option","Lunch",500.0,"https://i.pinimg.com/1200x/24/2e/3f/242e3fac5ed2c7479d90cf0b1d250148.jpg",true,false));
+    menuRepo.save(new MenuItem("Chicken Salad","Fresh chicken salad","Lunch",750.0,"https://i.pinimg.com/736x/b2/b9/5d/b2b95d9717b36b5f9e09161c766c21d7.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna Salad","Fresh tuna salad","Lunch",700.0,"https://i.pinimg.com/736x/23/af/b0/23afb0c47a670b9d417808d28650c399.jpg",true,false));
+    menuRepo.save(new MenuItem("Spaghetti with veggie","Vegetable spaghetti","Lunch",450.0,"https://i.pinimg.com/1200x/00/b9/36/00b9367ade95c19569b47cea6fd51bc1.jpg",true,false));
+    menuRepo.save(new MenuItem("Spaghetti with meat","Meat sauce spaghetti","Lunch",600.0,"https://i.pinimg.com/736x/a6/6a/03/a66a0333b456e02fd18b2bfdf6dc8529.jpg",true,false));
+    menuRepo.save(new MenuItem("Spaghetti with tomato sauce","Classic tomato sauce spaghetti","Lunch",500.0,"/Spaghetti with tomato sauce.jpg",true,false));
+    menuRepo.save(new MenuItem("Spaghetti with cream sauce","Creamy sauce spaghetti","Lunch",650.0,"/Spaghetti with cream sauce.jpg",true,false));
+    menuRepo.save(new MenuItem("Lasagna/Pesto","Lasagna with pesto","Lunch",900.0,"/Lasagna.jpg",true,true));
+    menuRepo.save(new MenuItem("Tagliatelle","Fresh tagliatelle pasta","Lunch",700.0,"tagliatelle2.jpg",true,false));
+    menuRepo.save(new MenuItem("Spaghetti with pesto sauce","Pesto sauce spaghetti","Lunch",550.0,"https://i.pinimg.com/236x/db/7d/75/db7d754f42cf60f42800f2928b09c434.jpg",true,false));
+    menuRepo.save(new MenuItem("Chicken Burger","Grilled chicken burger","Lunch",1050.0,"https://i.pinimg.com/736x/52/7b/91/527b91e2dd095c9d29ba7d4ec98a2928.jpg",true,false));
+    menuRepo.save(new MenuItem("Mini Cheese Burger","Mini cheese burger","Lunch",850.0,"https://i.pinimg.com/736x/69/24/32/692432adf92678e5196311036c19ba10.jpg",true,false));
+    menuRepo.save(new MenuItem("Mini Beef Burger","Mini beef burger","Lunch",750.0,"/Mini Beef Burger.jpg",true,false));
+    menuRepo.save(new MenuItem("Mini Special Burger","Mini special house burger","Lunch",950.0,"https://i.pinimg.com/736x/9b/3e/d3/9b3ed39deddba4339b0f251a776d2639.jpg",true,false));
+    
+    // SANDWICHES & WRAPS (from data.js)
+    menuRepo.save(new MenuItem("Veggie Wrap","Fresh vegetable wrap","Sandwiches & Wraps",550.0,"https://i.pinimg.com/736x/28/04/93/280493a88e7962607878b5136a9e2768.jpg",true,false));
+    menuRepo.save(new MenuItem("Chicken Wrap","Grilled chicken wrap","Sandwiches & Wraps",900.0,"https://i.pinimg.com/736x/9b/44/99/9b449935462de2ef94bf109e5b9d79e0.jpg",true,true));
+    menuRepo.save(new MenuItem("Egg Sandwich","Fresh egg sandwich","Sandwiches & Wraps",400.0,"https://i.pinimg.com/1200x/3e/56/bb/3e56bbc888cb325ab3b4a4e1042254e5.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Egg Sandwich","Special egg sandwich with extras","Sandwiches & Wraps",500.0,"https://i.pinimg.com/736x/04/bf/1f/04bf1f7ce96caa74e704aa3e80d693c0.jpg",true,false));
+    menuRepo.save(new MenuItem("Club Sandwich","Classic club sandwich","Sandwiches & Wraps",900.0,"/Club Sandwich.jpg",true,false));
+    menuRepo.save(new MenuItem("Special Wrap","Special house wrap","Sandwiches & Wraps",1100.0,"https://i.pinimg.com/736x/60/40/84/6040845f460793694760683d48b28f6e.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna Wrap","Tuna wrap","Sandwiches & Wraps",700.0,"https://i.pinimg.com/236x/bc/62/13/bc62136869801a5115a7452c84b98f97.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna sandwich","Fresh tuna sandwich","Sandwiches & Wraps",650.0,"https://i.pinimg.com/1200x/45/3d/81/453d812e4dfbb51c054d307e6b9165f1.jpg",true,false));
+    
+    // EXTRA (from data.js)
+    menuRepo.save(new MenuItem("Mayonnaise","Extra mayonnaise","Extra",70.0,"https://i.pinimg.com/1200x/f5/9e/0f/f59e0fd04b8cfe2e7721b6480dfcaff4.jpg",true,false));
+    menuRepo.save(new MenuItem("Egg","Extra egg","Extra",40.0,"https://i.pinimg.com/736x/95/06/cf/9506cfe34ed569ddb2650c79c2b97744.jpg",true,false));
+    menuRepo.save(new MenuItem("Honey","Extra honey","Extra",40.0,"https://i.pinimg.com/1200x/65/39/ad/6539ad611735f169d01c2f7dea941893.jpg",true,false));
+    menuRepo.save(new MenuItem("Tuna","Extra tuna","Extra",120.0,"https://i.pinimg.com/1200x/b0/67/f7/b067f7507e4537a6420aa6d6c3a4ed29.jpg",true,false));
+    menuRepo.save(new MenuItem("Cheese","Extra cheese","Extra",100.0,"https://i.pinimg.com/736x/c4/7a/73/c47a734bd8ed0c1073702df9d454117c.jpg",true,false));
+    menuRepo.save(new MenuItem("French fries","Side of french fries","Extra",300.0,"https://i.pinimg.com/736x/23/9a/cc/239accb1ea2e0d12e41a376a9adfd94b.jpg",true,false));
+    
+    // BOXES (from data.js)
+    menuRepo.save(new MenuItem("Takeaway Box 500g","Takeaway box 500 grams","Boxes",100.0,"https://i.pinimg.com/736x/90/bf/e8/90bfe81508ec5a627fe72179940fd640.jpg",true,false));
+    menuRepo.save(new MenuItem("Takeaway Box 750g","Takeaway box 750 grams","Boxes",120.0,"https://i.pinimg.com/1200x/3b/e9/2f/3be92f71cf6efd57e2c84e1879bb4753.jpg",true,false));
+    menuRepo.save(new MenuItem("Takeaway Box 1kg","Takeaway box 1 kilogram","Boxes",170.0,"https://i.pinimg.com/736x/60/1e/cf/601ecf1412343f4d9a05c57ed69a51da.jpg",true,false));
+    menuRepo.save(new MenuItem("Takeaway Alu 500g","Aluminum takeaway box 500 grams","Boxes",50.0,"https://i.pinimg.com/736x/a1/94/66/a194660ba19fa2c923651bc6efe57c72.jpg",true,false));
+    menuRepo.save(new MenuItem("Takeaway Alu 1kg","Aluminum takeaway box 1 kilogram","Boxes",100.0,"https://i.pinimg.com/1200x/5d/9b/ba/5d9bba1f8aa83a36015687bd318ce1a7.jpg",true,false));
+   }
    
-   // VIRGIN COCKTAIL
-   repo.save(new MenuItem("Classic Mojito","Refreshing classic mojito","Virgin Cocktail",315.0,"https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Mango Mojito","Tropical mango flavored mojito","Virgin Cocktail",367.5,"https://images.unsplash.com/photo-1546171753-97d7676e4602?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Strawberry Mojito","Sweet strawberry mojito","Virgin Cocktail",367.5,"https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Blue Hawaiian Mojito","Exotic blue Hawaiian mojito","Virgin Cocktail",367.5,"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Gelatino Special Mojito","House special signature mojito","Virgin Cocktail",420.0,"https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Virgin Espresso Mojito","Coffee-infused mojito","Virgin Cocktail",367.5,"https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Virgin Margarita Mojito","Tangy margarita style mojito","Virgin Cocktail",367.5,"https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=900&q=85",true));
-   
-   // CAKE
-   repo.save(new MenuItem("English Cake","Traditional English cake","Cake",126.0,"https://images.unsplash.com/photo-1558636508-e0db3814bd1d?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Banana Cake","Moist banana cake","Cake",126.0,"https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Raisen Cake","Classic raisin cake","Cake",126.0,"https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Baklava","Sweet layered pastry","Cake",105.0,"https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Boxegna","Traditional Ethiopian sweet","Cake",231.0,"https://images.unsplash.com/photo-1587241321921-91a834d82d90?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Bombolino","Italian fried dough","Cake",105.0,"https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Donut","Classic glazed donut","Cake",157.5,"https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Cheese Cake","Creamy cheesecake","Cake",367.5,"https://images.unsplash.com/photo-1533134486753-c833f0ed4866?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Orange Cake","Citrus orange cake","Cake",126.0,"https://images.unsplash.com/photo-1557925923-cd4648e211a0?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Brownie Cake","Rich chocolate brownie","Cake",126.0,"https://images.unsplash.com/photo-1607920591413-4ec007e70023?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Chocolate Cake","Classic chocolate cake","Cake",231.0,"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("White Forest","White chocolate forest cake","Cake",210.0,"https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Black Forest","Classic black forest cake","Cake",210.0,"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tiramisu","Italian coffee dessert","Cake",231.0,"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Caramel","Caramel cake","Cake",231.0,"https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Millifoni","Layered puff pastry cake","Cake",231.0,"https://images.unsplash.com/photo-1519915212116-7cfef71f1d3e?auto=format&fit=crop&w=900&q=85",true));
-   
-   // COLD DRINKS
-   repo.save(new MenuItem("Soft Drink","Assorted soft drinks","Cold Drinks",126.0,"https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Water","Bottled water","Cold Drinks",63.0,"https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Iced Latte","Cold espresso with milk","Cold Drinks",367.5,"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Iced Coffee","Refreshing iced coffee","Cold Drinks",336.0,"https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spris Juice","Sprite juice blend","Cold Drinks",367.5,"https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Juice","House special juice","Cold Drinks",420.0,"https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Milk Shake","Creamy milk shake","Cold Drinks",472.5,"https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Strawberry Shake","Fresh strawberry shake","Cold Drinks",420.0,"https://images.unsplash.com/photo-1568901839119-631418a3910b?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Mango Shake","Tropical mango shake","Cold Drinks",420.0,"https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Avocado Shake","Creamy avocado shake","Cold Drinks",420.0,"https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Papaya Shake","Sweet papaya shake","Cold Drinks",420.0,"https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Ambo Water","Sparkling mineral water","Cold Drinks",136.5,"https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9f?auto=format&fit=crop&w=900&q=85",true));
-   
-   // BREAKFAST
-   repo.save(new MenuItem("Pancake With Syrup / Honey","Fluffy pancakes with syrup or honey","Breakfast",420.0,"https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Special Fatira","Special Ethiopian flatbread","Breakfast",577.5,"https://images.unsplash.com/photo-1587241321921-91a834d82d90?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Chechebsa","Traditional Ethiopian breakfast","Breakfast",420.0,"https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Chechebsa","Premium chechebsa with extras","Breakfast",525.0,"https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Ful","Traditional fava bean dish","Breakfast",315.0,"https://images.unsplash.com/photo-1555210530-9e885e1dc0a2?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Ful","Enhanced ful with toppings","Breakfast",420.0,"https://images.unsplash.com/photo-1555210530-9e885e1dc0a2?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Avocado Toast","Smashed avocado on toast","Breakfast",420.0,"https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("French Toast","Classic French toast","Breakfast",420.0,"https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Crepes with single scoop","Crepes with one scoop of ice cream","Breakfast",882.0,"https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Crepes with double scoop","Crepes with two scoops of ice cream","Breakfast",1212.75,"https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Waffle With Single Scoop","Waffle with one scoop of ice cream","Breakfast",882.0,"https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Waffle With Double Scoop","Waffle with two scoops of ice cream","Breakfast",1212.75,"https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Waffle With Syrup / Honey","Waffle with syrup or honey","Breakfast",420.0,"https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Waffle With Chocolate","Chocolate drizzled waffle","Breakfast",420.0,"https://images.unsplash.com/photo-1562376552-0d160a2f238d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Brownie W. Single Scoop","Brownie with one scoop of ice cream","Breakfast",651.0,"https://images.unsplash.com/photo-1607920591413-4ec007e70023?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Brownie With Double Scoop","Brownie with two scoops of ice cream","Breakfast",981.23,"https://images.unsplash.com/photo-1607920591413-4ec007e70023?auto=format&fit=crop&w=900&q=85",true));
-   
-   // LUNCH
-   repo.save(new MenuItem("Vegetable Pizza","Fresh vegetable pizza","Lunch",682.5,"https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Margerita Pizza","Classic margerita pizza","Lunch",1050.0,"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Chicken Pizza","Chicken topped pizza","Lunch",1155.0,"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Beef Pizza","Beef topped pizza","Lunch",1102.5,"https://images.unsplash.com/photo-1542574621-e088a4464f7e?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Pizza","House special pizza","Lunch",1312.5,"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Salami Pizza","Italian salami pizza","Lunch",1627.5,"https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna With Cheese Pizza","Tuna and cheese pizza","Lunch",1207.5,"https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna Pizza","Classic tuna pizza","Lunch",840.0,"https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Fasting Salad","Vegan Ethiopian salad","Lunch",525.0,"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Chicken Salad","Fresh chicken salad","Lunch",787.5,"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna Salad","Tuna salad","Lunch",735.0,"https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spaghetti with veggie","Vegetable spaghetti","Lunch",472.5,"https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spaghetti with meat","Meat sauce spaghetti","Lunch",630.0,"https://images.unsplash.com/photo-1608756687911-aa1599ab3bd9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spaghetti with tomato sauce","Tomato sauce spaghetti","Lunch",525.0,"https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spaghetti with cream sauce","Creamy spaghetti","Lunch",682.5,"https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Lasagna/Pesto","Lasagna with pesto","Lunch",945.0,"https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Togliatelle","Fresh togliatelle pasta","Lunch",735.0,"https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Spaghetti with pesto sauce","Pesto spaghetti","Lunch",577.5,"https://images.unsplash.com/photo-1627662168781-d094d86b7b8d?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Chicken Burger","Juicy chicken burger","Lunch",1102.5,"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Mini Cheese Burger","Small cheese burger","Lunch",892.5,"https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Mini Beef Burger","Small beef burger","Lunch",787.5,"https://images.unsplash.com/photo-1561758033-d89a9ad46330?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Mini Special Burger","Small special burger","Lunch",997.5,"https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=900&q=85",true));
-   
-   // SANDWICHES & WRAPS
-   repo.save(new MenuItem("Veggie Wrap","Fresh vegetable wrap","Sandwiches & Wraps",577.5,"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=85",true,false));
-   repo.save(new MenuItem("Chicken Wrap","Grilled chicken wrap","Sandwiches & Wraps",945.0,"https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=900&q=85",true,true));
-   repo.save(new MenuItem("Egg Sandwich","Classic egg sandwich","Sandwiches & Wraps",420.0,"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Egg Sandwich","Enhanced egg sandwich","Sandwiches & Wraps",525.0,"https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Club Sandwich","Triple decker club sandwich","Sandwiches & Wraps",945.0,"https://images.unsplash.com/photo-1529006557810-274b9b2fc783?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Wrap","House special wrap","Sandwiches & Wraps",1155.0,"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna Wrap","Tuna salad wrap","Sandwiches & Wraps",735.0,"https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna sandwich","Tuna sandwich","Sandwiches & Wraps",682.5,"https://images.unsplash.com/photo-1612240498303-7b1cf6d29e48?auto=format&fit=crop&w=900&q=85",true));
-   
-   // EXTRA
-   repo.save(new MenuItem("Mayonnaise","Extra mayonnaise","Extra",73.5,"https://images.unsplash.com/photo-1471967183320-ee018f6e114a?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Egg","Extra egg","Extra",42.0,"https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Honey","Extra honey","Extra",42.0,"https://images.unsplash.com/photo-1587049352846-4a222e784238?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tuna","Extra tuna","Extra",126.0,"https://images.unsplash.com/photo-1599084993091-1cb5c0721cc6?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Cheese","Extra cheese","Extra",105.0,"https://images.unsplash.com/photo-1552767059-ce182ead6c1b?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("French fries","Side of french fries","Extra",315.0,"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=85",true));
-   
-   // BOXES
-   repo.save(new MenuItem("Takeaway Box 500g","500g takeaway box","Boxes",105.0,"https://images.unsplash.com/photo-1562424801-5aa38c96c3b3?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Takeaway Box 750g","750g takeaway box","Boxes",126.0,"https://images.unsplash.com/photo-1562424801-5aa38c96c3b3?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Takeaway Box 1kg","1kg takeaway box","Boxes",178.5,"https://images.unsplash.com/photo-1562424801-5aa38c96c3b3?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Takeaway Alu 500g","500g aluminum container","Boxes",52.5,"https://images.unsplash.com/photo-1610779556235-82e6d165e498?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Takeaway Alu 1kg","1kg aluminum container","Boxes",105.0,"https://images.unsplash.com/photo-1610779556235-82e6d165e498?auto=format&fit=crop&w=900&q=85",true));
-   
-   // HOT DRINKS
-   repo.save(new MenuItem("Macchiato","Espresso with foam","Hot Drinks",168.0,"https://images.unsplash.com/photo-1557006021-b85faa2bc5e2?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Fasting Macchiato","Dairy-free macchiato","Hot Drinks",210.0,"https://images.unsplash.com/photo-1557006021-b85faa2bc5e2?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tea","Traditional tea","Hot Drinks",84.0,"https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Special Tea","House special tea","Hot Drinks",210.0,"https://images.unsplash.com/photo-1597318132469-b3c6a2c8f1d5?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Flavored Tea","Flavored tea selection","Hot Drinks",105.0,"https://images.unsplash.com/photo-1597318132469-b3c6a2c8f1d5?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Coffee","Traditional Ethiopian coffee","Hot Drinks",147.0,"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Milk","Fresh milk","Hot Drinks",126.0,"https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Tea With Coffee","Tea and coffee blend","Hot Drinks",168.0,"https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Coffee Latte","Espresso with steamed milk","Hot Drinks",189.0,"https://images.unsplash.com/photo-1561047029-3000c68339ca?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Cappuccino","Espresso with foam","Hot Drinks",231.0,"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Hot Chocolate","Rich hot chocolate","Hot Drinks",283.5,"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Espresso","Italian espresso shot","Hot Drinks",147.0,"https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Americano Coffee","Espresso with water","Hot Drinks",178.5,"https://images.unsplash.com/photo-1551030173-122aabc4489c?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Machi","Ethiopian coffee drink","Hot Drinks",189.0,"https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Caramel Macchiato","Caramel flavored macchiato","Hot Drinks",231.0,"https://images.unsplash.com/photo-1599750089934-27044d6e9df9?auto=format&fit=crop&w=900&q=85",true));
-   repo.save(new MenuItem("Affogato","Ice cream with espresso","Hot Drinks",420.0,"https://images.unsplash.com/photo-1612201078868-84bcc7236726?auto=format&fit=crop&w=900&q=85",true));
-  }
- };}
-
-
-
+   // Create branch-specific pricing - all branches start with same base prices
+   // Admin can customize prices per branch later via admin panel
+   if(priceRepo.count()==0){
+     List<MenuItem> allItems = menuRepo.findAll();
+     List<Branch> allBranches = branchRepo.findAll();
+     
+     for(Branch branch : allBranches){
+       for(MenuItem item : allItems){
+         priceRepo.save(new BranchMenuPrice(branch, item, item.getPrice()));
+       }
+     }
+   }
+  };
+ }
 }

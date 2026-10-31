@@ -1,3 +1,17 @@
+export const CATEGORY_ORDER = [
+  'Breakfast',
+  'Cake',
+  'Ice Cream',
+  'Torta',
+  'Cold Drinks',
+  'Hot Drinks',
+  'Virgin Cocktail',
+  'Lunch',
+  'Sandwiches & Wraps',
+  'Extra',
+  'Boxes',
+]
+
 export const locations = [
   { name: 'Gelatiamo Bole Bulbula', address: 'Bole Bulbula, Addis Ababa', phone: '+251 911 234 567', mapUrl: 'https://maps.app.goo.gl/NE4ENNvc1zCUpEdp7' },
   { name: 'GELATIAMO Addis', address: 'Bole Medhanialem, Addis Ababa', phone: '+251 911 345 678', mapUrl: 'https://maps.app.goo.gl/tasRkLQyknbL5UEj7' },

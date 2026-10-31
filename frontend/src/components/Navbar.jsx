@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Menu as MenuIcon, X } from 'lucide-react'
+import { Menu as MenuIcon, MapPin, X } from 'lucide-react'
 import { useI18n } from '../i18n'
 import { cafeConfig } from '../config'
+import BranchSelector from './BranchSelector'
 
-export default function Navbar() {
+export default function Navbar({ selectedBranch, onSelectBranch }) {
   const {t, lang, setLang} = useI18n()
   const [menuOpen, setMenuOpen] = useState(false)
   
@@ -23,11 +24,13 @@ export default function Navbar() {
       </button>
       
       <nav className={menuOpen ? 'main-nav open' : 'main-nav'}>
+         <div className="mobile-branch-wrapper">
+          <BranchSelector selectedBranch={selectedBranch} onSelectBranch={(b) => { onSelectBranch(b); setMenuOpen(false) }} />
+        </div>
         <NavLink to="/" onClick={() => setMenuOpen(false)}>{t('home')}</NavLink>
         <NavLink to="/menu" onClick={() => setMenuOpen(false)}>{t('menu')}</NavLink>
-        <NavLink to="/locations" onClick={() => setMenuOpen(false)}>{t('locations')}</NavLink>
-        {/* <NavLink to="/#story" onClick={() => setMenuOpen(false)}>{t('story')}</NavLink> */}
         <NavLink to="/contact" onClick={() => setMenuOpen(false)}>{t('contact')}</NavLink>
+        <NavLink to="/feedback" onClick={() => setMenuOpen(false)}>Feedback</NavLink>
         <button 
           className="mobile-lang-toggle" 
           onClick={() => setLang(lang === 'en' ? 'am' : 'en')}
@@ -37,6 +40,7 @@ export default function Navbar() {
       </nav>
       
       <div className="header-actions">
+        <BranchSelector selectedBranch={selectedBranch} onSelectBranch={onSelectBranch} />
         <button 
           className="lang-toggle" 
           onClick={() => setLang(lang === 'en' ? 'am' : 'en')}

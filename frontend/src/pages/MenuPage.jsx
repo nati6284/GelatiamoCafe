@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import MenuCard from '../components/MenuCard'
+import { CATEGORY_ORDER } from '../data'
 
 export default function MenuPage({items, onSelectItem}) {
   const {t}=useI18n();
@@ -17,7 +18,17 @@ export default function MenuPage({items, onSelectItem}) {
     return groups
   }, [items])
   
-  const categories = Object.keys(groupedByCategory)
+  const categories = useMemo(() => {
+    const keys = Object.keys(groupedByCategory)
+    return keys.sort((a, b) => {
+      const ai = CATEGORY_ORDER.indexOf(a)
+      const bi = CATEGORY_ORDER.indexOf(b)
+      if (ai === -1 && bi === -1) return a.localeCompare(b)
+      if (ai === -1) return 1
+      if (bi === -1) return -1
+      return ai - bi
+    })
+  }, [groupedByCategory])
   
   // Scroll to category
   const scrollToCategory = (cat) => {
@@ -93,12 +104,17 @@ export default function MenuPage({items, onSelectItem}) {
   const filtered = search ? items.filter(x=>(x.name+' '+x.description).toLowerCase().includes(search.toLowerCase())&&x.available!==false) : items
   
   return <>
-    <section className="page-banner">
+    <section className="page-banner page-banner--bg">
       <span className="eyebrow">FRESH FROM OUR KITCHEN</span>
       <h1>{t('menuTitle')}</h1>
       <p>{t('menuSub')}</p>
     </section>
     <section className="section menu-page">
+      {/* Search Input */}
+      <div className="menu-tools-search">
+        <input className="search-input" placeholder="Search menu..." value={search} onChange={e=>setSearch(e.target.value)}/>
+      </div>
+
       {/* Category Navigation */}
       <div className="category-nav-sticky">
         {categories.map(cat=>
@@ -110,11 +126,6 @@ export default function MenuPage({items, onSelectItem}) {
             {t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}
           </button>
         )}
-      </div>
-      
-      {/* Search Input */}
-      <div className="menu-tools-search">
-        <input className="search-input" placeholder="Search menu..." value={search} onChange={e=>setSearch(e.target.value)}/>
       </div>
       
       {search ? (
