@@ -110,8 +110,8 @@ function AppShell() {
 
       <main>
         <Routes>
-          <Route path="/" element={<Home items={items} onSelectItem={setSelectedItem} loading={loading}/>}/>
-          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem} loading={loading}/>}/>
+          <Route path="/" element={<Home items={items} onSelectItem={setSelectedItem} loading={loading} selectedBranch={selectedBranch}/>}/>
+          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem} loading={loading} selectedBranch={selectedBranch}/>}/>
           <Route path="/locations" element={<LocationsPage branches={branches}/>}/>
           <Route path="/contact" element={<ContactPage selectedBranch={selectedBranch}/>}/>
           <Route path="/feedback" element={<FeedbackPage/>}/>

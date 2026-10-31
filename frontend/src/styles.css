@@ -413,6 +413,15 @@ button:disabled{opacity:.55;cursor:not-allowed}
   line-height:1.9;
 }
 
+.branch-welcome{
+  font-size:30px;
+  color:var(--italian-red) !important;
+  opacity:0.85;
+  margin-bottom:6px;
+  font-weight:500;
+  letter-spacing:0.02em;
+}
+
 .hero-buttons{
   display:flex;
   gap:12px;

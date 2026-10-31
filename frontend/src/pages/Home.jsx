@@ -4,7 +4,7 @@ import { useI18n } from '../i18n'
 import { cafeConfig } from '../config'
 import MenuCard from '../components/MenuCard'
 
-export default function Home({items, onSelectItem}) {
+export default function Home({items, onSelectItem, selectedBranch}) {
   const {t}=useI18n()
   return <>
     <section className="hero">
@@ -12,6 +12,9 @@ export default function Home({items, onSelectItem}) {
       <div className="hero-shade"></div>
       <div className="hero-content">
         <span className="eyebrow"><span></span>{t('eyebrow')}</span>
+        {selectedBranch && (
+          <p className="branch-welcome">Welcome to {selectedBranch.name}</p>
+        )}
         <h1>{t('headline')}</h1>
         <p>{t('intro')}</p>
         <div className="hero-buttons">

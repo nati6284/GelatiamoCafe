@@ -3,7 +3,7 @@ import { useI18n } from '../i18n'
 import MenuCard from '../components/MenuCard'
 import { CATEGORY_ORDER } from '../data'
 
-export default function MenuPage({items, onSelectItem}) {
+export default function MenuPage({items, onSelectItem, selectedBranch}) {
   const {t}=useI18n();
   const [activeCategory,setActiveCategory]=useState('');
   const [search,setSearch]=useState('')
@@ -106,6 +106,9 @@ export default function MenuPage({items, onSelectItem}) {
   return <>
     <section className="page-banner page-banner--bg">
       <span className="eyebrow">FRESH FROM OUR KITCHEN</span>
+      {selectedBranch && (
+        <p className="branch-welcome">Welcome to {selectedBranch.name}</p>
+      )}
       <h1>{t('menuTitle')}</h1>
       <p>{t('menuSub')}</p>
     </section>
