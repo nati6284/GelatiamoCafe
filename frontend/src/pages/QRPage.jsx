@@ -58,7 +58,14 @@ export function QRPrintCard({ branch }) {
           font-weight: 700;
           color: #009246;
           text-align: center;
-          margin-bottom: 40px;
+          margin-bottom: 12px;
+        }
+        .branch-name {
+          font-size: 15px;
+          color: #131212ff;
+          text-align: center;
+          font-style: bold;
+          margin-bottom: 28px;
         }
         .qr-box {
           border: 2.5px solid #009246;
@@ -90,6 +97,7 @@ export function QRPrintCard({ branch }) {
       </div>
       <hr/>
       <p class="scan-title">Scan for Our Digital Menu</p>
+      <p class="branch-name">${branch.name}</p>
       <div class="qr-box">
         <img id="qr" src="${qrSrc}" alt="QR Code" />
       </div>
