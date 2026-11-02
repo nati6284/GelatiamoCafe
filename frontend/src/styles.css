@@ -2315,6 +2315,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .qr-print-preview .qr-print-header{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:14px;
   margin-bottom:20px;
 }
@@ -2343,11 +2344,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
   margin-top:2px;
 }
 
-.qr-print-divider{
+/* .qr-print-divider{
   border:none;
   border-top:2px solid var(--italian-green);
   margin:0 0 24px;
-}
+} */
 
 .qr-print-title{
   font-size:20px;
