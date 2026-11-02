@@ -9,6 +9,7 @@ public class BranchMenuPrice {
   @ManyToOne @JoinColumn(name="menu_item_id", nullable=false, foreignKey=@ForeignKey(name="fk_bmp_menuitem")) private MenuItem menuItem;
   
   @NotNull @DecimalMin("0.0") private Double price;
+  @Column(columnDefinition="TEXT") private String branchImage; // overrides MenuItem.image for this branch
   private boolean available = true;
   
   public BranchMenuPrice() {}
@@ -22,5 +23,6 @@ public class BranchMenuPrice {
   public Branch getBranch(){return branch;} public void setBranch(Branch branch){this.branch=branch;}
   public MenuItem getMenuItem(){return menuItem;} public void setMenuItem(MenuItem menuItem){this.menuItem=menuItem;}
   public Double getPrice(){return price;} public void setPrice(Double price){this.price=price;}
+  public String getBranchImage(){return branchImage;} public void setBranchImage(String branchImage){this.branchImage=branchImage;}
   public boolean isAvailable(){return available;} public void setAvailable(boolean available){this.available=available;}
 }

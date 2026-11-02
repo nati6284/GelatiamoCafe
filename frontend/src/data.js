@@ -1,13 +1,20 @@
+// Fallback order used when API categories are not yet loaded
 export const CATEGORY_ORDER = [
   'Breakfast',
+  'Pizza',
+  'Spaghetti',
+  'Salad',
+  'Soups',
+  'Burgers',
+  'Main Courses',
+  'Combo Meals',
+  'Sandwiches & Wraps',
   'Cake',
   'Ice Cream',
   'Torta',
   'Cold Drinks',
   'Hot Drinks',
   'Virgin Cocktail',
-  'Lunch',
-  'Sandwiches & Wraps',
   'Extra',
   'Boxes',
 ]

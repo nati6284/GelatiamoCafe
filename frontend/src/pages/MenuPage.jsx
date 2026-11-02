@@ -3,10 +3,17 @@ import { useI18n } from '../i18n'
 import MenuCard from '../components/MenuCard'
 import { CATEGORY_ORDER } from '../data'
 
-export default function MenuPage({items, onSelectItem, selectedBranch}) {
+export default function MenuPage({items, onSelectItem, selectedBranch, categories}) {
   const {t}=useI18n();
   const [activeCategory,setActiveCategory]=useState('');
   const [search,setSearch]=useState('')
+
+  // Build ordered category list: use API categories if available, fall back to CATEGORY_ORDER
+  const categoryOrder = useMemo(() => {
+    if (categories && categories.length > 0)
+      return categories.map(c => c.name)
+    return CATEGORY_ORDER
+  }, [categories])
   
   // Group items by category
   const groupedByCategory = useMemo(() => {
@@ -18,17 +25,17 @@ export default function MenuPage({items, onSelectItem, selectedBranch}) {
     return groups
   }, [items])
   
-  const categories = useMemo(() => {
+  const categories_sorted = useMemo(() => {
     const keys = Object.keys(groupedByCategory)
     return keys.sort((a, b) => {
-      const ai = CATEGORY_ORDER.indexOf(a)
-      const bi = CATEGORY_ORDER.indexOf(b)
+      const ai = categoryOrder.indexOf(a)
+      const bi = categoryOrder.indexOf(b)
       if (ai === -1 && bi === -1) return a.localeCompare(b)
       if (ai === -1) return 1
       if (bi === -1) return -1
       return ai - bi
     })
-  }, [groupedByCategory])
+  }, [groupedByCategory, categoryOrder])
   
   // Scroll to category
   const scrollToCategory = (cat) => {
@@ -41,34 +48,27 @@ export default function MenuPage({items, onSelectItem, selectedBranch}) {
     }
   }
   
-  // Detect active category on scroll
   useEffect(() => {
-    if (!categories.length) return
+    if (!categories_sorted.length) return
     
     const handleScroll = () => {
-      // Adjust offset based on screen size
       const isMobile = window.innerWidth <= 780
       const offset = isMobile ? 150 : 250
       const scrollPosition = window.scrollY + offset
       
-      // Find which category section we're currently viewing
-      let currentCategory = categories[0]
+      let currentCategory = categories_sorted[0]
       
-      for (const cat of categories) {
+      for (const cat of categories_sorted) {
         const element = document.getElementById(`category-${cat}`)
         if (element) {
           const elementTop = element.offsetTop
           const viewThreshold = isMobile ? 50 : 100
-          
-          if (scrollPosition >= elementTop - viewThreshold) {
-            currentCategory = cat
-          }
+          if (scrollPosition >= elementTop - viewThreshold) currentCategory = cat
         }
       }
       
       setActiveCategory(currentCategory)
       
-      // Auto-scroll the category nav to show active category
       const activeButton = document.querySelector('.category-nav-sticky button.active')
       const navContainer = document.querySelector('.category-nav-sticky')
       
@@ -76,30 +76,19 @@ export default function MenuPage({items, onSelectItem, selectedBranch}) {
         const buttonLeft = activeButton.offsetLeft
         const buttonWidth = activeButton.offsetWidth
         const containerWidth = navContainer.offsetWidth
-        const scrollLeft = navContainer.scrollLeft
-        
-        // Calculate the position to scroll to (center the active button)
         const targetScroll = buttonLeft - (containerWidth / 2) + (buttonWidth / 2)
-        
-        // Smooth scroll the nav container
-        navContainer.scrollTo({
-          left: targetScroll,
-          behavior: 'smooth'
-        })
+        navContainer.scrollTo({ left: targetScroll, behavior: 'smooth' })
       }
     }
     
-    // Initial call
     handleScroll()
-    
-    // Add scroll listener
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('resize', handleScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', handleScroll)
     }
-  }, [categories, activeCategory])
+  }, [categories_sorted, activeCategory])
   
   const filtered = search ? items.filter(x=>(x.name+' '+x.description).toLowerCase().includes(search.toLowerCase())&&x.available!==false) : items
   
@@ -120,7 +109,7 @@ export default function MenuPage({items, onSelectItem, selectedBranch}) {
 
       {/* Category Navigation */}
       <div className="category-nav-sticky">
-        {categories.map(cat=>
+        {categories_sorted.map(cat=>
           <button 
             className={activeCategory===cat?'active':''} 
             key={cat} 
@@ -137,7 +126,7 @@ export default function MenuPage({items, onSelectItem, selectedBranch}) {
           <p className="empty-state">No menu items found.</p>
       ) : (
         <div className="menu-by-category">
-          {categories.map(cat => (
+          {categories_sorted.map(cat => (
             <div key={cat} id={`category-${cat}`} className="category-section">
               <h2 className="category-title">{t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}</h2>
               <div className="menu-grid">

@@ -69,12 +69,14 @@ function AppShell() {
   const [selectedBranch, setSelectedBranch] = useState(null)
   const [menuItems, setMenuItems] = useState(null) // null = not yet loaded
   const [branches, setBranches] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const staticItems = useMemo(() => convertMenuToArray(), [])
   const location = useLocation()
 
   useEffect(() => {
     api.branches().then(setBranches).catch(console.error)
+    api.categories().then(setCategories).catch(console.error)
   }, [])
   
   // Load menu based on branch selection
@@ -118,7 +120,7 @@ function AppShell() {
       <main>
         <Routes>
           <Route path="/" element={<Home items={items} onSelectItem={setSelectedItem} loading={loading} selectedBranch={selectedBranch}/>}/>
-          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem} loading={loading} selectedBranch={selectedBranch}/>}/>
+          <Route path="/menu" element={<MenuPage items={items} onSelectItem={setSelectedItem} loading={loading} selectedBranch={selectedBranch} categories={categories}/>}/>
           <Route path="/locations" element={<LocationsPage branches={branches}/>}/>
           <Route path="/contact" element={<ContactPage selectedBranch={selectedBranch}/>}/>
           <Route path="/feedback" element={<FeedbackPage/>}/>
