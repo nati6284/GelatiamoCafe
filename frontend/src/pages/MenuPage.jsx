@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useI18n } from '../i18n'
 import MenuCard from '../components/MenuCard'
+import PrintableMenu from '../components/PrintableMenu'
 import { CATEGORY_ORDER } from '../data'
 
 export default function MenuPage({items, onSelectItem, selectedBranch, categories}) {
   const {t}=useI18n();
   const [activeCategory,setActiveCategory]=useState('');
   const [search,setSearch]=useState('')
+  const [printView,setPrintView]=useState(false)
+  const isAdmin = !!sessionStorage.getItem('adminToken')
 
   // Build ordered category list: use API categories if available, fall back to CATEGORY_ORDER
   const categoryOrder = useMemo(() => {
@@ -93,7 +96,7 @@ export default function MenuPage({items, onSelectItem, selectedBranch, categorie
   const filtered = search ? items.filter(x=>(x.name+' '+x.description).toLowerCase().includes(search.toLowerCase())&&x.available!==false) : items
   
   return <>
-    <section className="page-banner page-banner--bg">
+    <section className="page-banner page-banner--bg no-print">
       <span className="eyebrow">FRESH FROM OUR KITCHEN</span>
       {selectedBranch && (
         <p className="branch-welcome">Welcome to {selectedBranch.name}</p>
@@ -102,39 +105,56 @@ export default function MenuPage({items, onSelectItem, selectedBranch, categorie
       <p>{t('menuSub')}</p>
     </section>
     <section className="section menu-page">
-      {/* Search Input */}
-      <div className="menu-tools-search">
-        <input className="search-input" placeholder="Search menu..." value={search} onChange={e=>setSearch(e.target.value)}/>
-      </div>
 
-      {/* Category Navigation */}
-      <div className="category-nav-sticky">
-        {categories_sorted.map(cat=>
-          <button 
-            className={activeCategory===cat?'active':''} 
-            key={cat} 
-            onClick={()=>scrollToCategory(cat)}
-          >
-            {t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}
+      {printView && isAdmin ? (
+        <>
+          <button className="print-back-btn no-print" onClick={()=>setPrintView(false)}>
+            ← Back to Menu
           </button>
-        )}
-      </div>
-      
-      {search ? (
-        filtered.length ? 
-          <div className="menu-grid">{filtered.map(item=><MenuCard key={item.id} item={item} onClick={onSelectItem}/>)}</div> :
-          <p className="empty-state">No menu items found.</p>
+          <PrintableMenu items={items} branch={selectedBranch} categories={categories}/>
+        </>
       ) : (
-        <div className="menu-by-category">
-          {categories_sorted.map(cat => (
-            <div key={cat} id={`category-${cat}`} className="category-section">
-              <h2 className="category-title">{t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}</h2>
-              <div className="menu-grid">
-                {groupedByCategory[cat].map(item=><MenuCard key={item.id} item={item} onClick={onSelectItem}/>)}
-              </div>
+        <>
+          {/* Toolbar */}
+          <div className="menu-tools-search">
+            {isAdmin && (
+              <button className="print-trigger-btn" onClick={()=>setPrintView(true)}>
+                🖨 Print Menu
+              </button>
+            )}
+            <input className="search-input" placeholder="Search menu..." value={search} onChange={e=>setSearch(e.target.value)}/>
+          </div>
+
+          {/* Category Navigation */}
+          <div className="category-nav-sticky">
+            {categories_sorted.map(cat=>
+              <button
+                className={activeCategory===cat?'active':''}
+                key={cat}
+                onClick={()=>scrollToCategory(cat)}
+              >
+                {t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}
+              </button>
+            )}
+          </div>
+
+          {search ? (
+            filtered.length ?
+              <div className="menu-grid">{filtered.map(item=><MenuCard key={item.id} item={item} onClick={onSelectItem}/>)}</div> :
+              <p className="empty-state">No menu items found.</p>
+          ) : (
+            <div className="menu-by-category">
+              {categories_sorted.map(cat => (
+                <div key={cat} id={`category-${cat}`} className="category-section">
+                  <h2 className="category-title">{t(`categories.${cat}`)===`categories.${cat}`?cat:t(`categories.${cat}`)}</h2>
+                  <div className="menu-grid">
+                    {groupedByCategory[cat].map(item=><MenuCard key={item.id} item={item} onClick={onSelectItem}/>)}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </section>
   </>
