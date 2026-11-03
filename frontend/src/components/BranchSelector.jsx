@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MapPin } from 'lucide-react'
 
 export default function BranchSelector({ selectedBranch, onSelectBranch, branches = [], forceOpen, onClose }) {
   const [show, setShow] = useState(false)
+  const containerRef = useRef(null)
 
-  // Set default branch once branches are available
   useEffect(() => {
     if (branches.length === 0) return
     const params = new URLSearchParams(window.location.search)
@@ -13,13 +13,11 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, branche
       const branch = branches.find(b => b.code === branchCode.toUpperCase())
       if (branch) { onSelectBranch(branch); return }
     }
-    // Sync selected branch with fresh data (picks up name/address changes)
     if (selectedBranch) {
       const fresh = branches.find(b => b.id === selectedBranch.id)
       if (fresh && fresh.name !== selectedBranch.name) onSelectBranch(fresh)
       return
     }
-    // Default to BOLE_MEDHANIALEM or first active
     const def = branches.find(b => b.code === 'BOLE_MEDHANIALEM') || branches.find(b => b.active)
     if (def) onSelectBranch(def)
   }, [branches])
@@ -28,41 +26,52 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, branche
     if (forceOpen) setShow(true)
   }, [forceOpen])
 
-  const handleClose = () => {
+  // Close when tapping outside
+  useEffect(() => {
+    if (!show) return
+    const handleOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setShow(false)
+        if (onClose) onClose()
+      }
+    }
+    document.addEventListener('pointerdown', handleOutside)
+    return () => document.removeEventListener('pointerdown', handleOutside)
+  }, [show])
+
+  const handleSelect = (branch) => {
+    onSelectBranch(branch)
     setShow(false)
     if (onClose) onClose()
   }
 
   return (
-    <div className="branch-selector">
-      <button className="branch-button" onClick={() => setShow(!show)}>
+    <div className="branch-selector" ref={containerRef}>
+      <button className="branch-button" onClick={() => setShow(s => !s)}>
         <MapPin size={16} />
         {selectedBranch ? selectedBranch.name : 'Select Branch'}
       </button>
 
       {show && (
-        <>
-          <div className="branch-overlay" onClick={handleClose} />
-          <div className="branch-dropdown">
-            <h3>Choose Your Branch</h3>
-            <div className="branch-list">
-              {branches.filter(b => b.active).map(branch => (
-                <button
-                  key={branch.id}
-                  className={`branch-option ${selectedBranch?.id === branch.id ? 'active' : ''}`}
-                  onClick={() => { onSelectBranch(branch); handleClose() }}
-                >
-                  <div className="branch-info">
-                    <strong>{branch.name}</strong>
-                    <small>{branch.address}</small>
-                    {branch.phone && <small>{branch.phone}</small>}
-                  </div>
-                  {selectedBranch?.id === branch.id && <span className="check">✓</span>}
-                </button>
-              ))}
-            </div>
+        <div className="branch-dropdown">
+          <h3>Choose Your Branch</h3>
+          <div className="branch-list">
+            {branches.filter(b => b.active).map(branch => (
+              <button
+                key={branch.id}
+                className={`branch-option ${selectedBranch?.id === branch.id ? 'active' : ''}`}
+                onPointerDown={(e) => { e.stopPropagation(); handleSelect(branch) }}
+              >
+                <div className="branch-info">
+                  <strong>{branch.name}</strong>
+                  <small>{branch.address}</small>
+                  {branch.phone && <small>{branch.phone}</small>}
+                </div>
+                {selectedBranch?.id === branch.id && <span className="check">✓</span>}
+              </button>
+            ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   )
