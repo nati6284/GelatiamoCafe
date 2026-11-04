@@ -71,8 +71,16 @@ function AppShell() {
   const [branches, setBranches] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isAdmin, setIsAdmin] = useState(() => !!sessionStorage.getItem('adminToken'))
   const staticItems = useMemo(() => convertMenuToArray(), [])
   const location = useLocation()
+
+  // Listen for admin login/logout events from AdminPage
+  useEffect(() => {
+    const handler = () => setIsAdmin(!!sessionStorage.getItem('adminToken'))
+    window.addEventListener('adminAuthChange', handler)
+    return () => window.removeEventListener('adminAuthChange', handler)
+  }, [])
 
   useEffect(() => {
     api.branches().then(setBranches).catch(console.error)
@@ -115,7 +123,7 @@ function AppShell() {
   
   return (
     <div className={lang === 'am' ? 'app amharic' : 'app'}>
-      <Navbar selectedBranch={selectedBranch} onSelectBranch={setSelectedBranch} branches={branches} />
+      <Navbar selectedBranch={selectedBranch} onSelectBranch={setSelectedBranch} branches={branches} isAdmin={isAdmin} />
 
       <main>
         <Routes>

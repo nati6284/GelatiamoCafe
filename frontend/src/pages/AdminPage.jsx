@@ -59,10 +59,14 @@ export default function AdminPage() {
   const [addCatFilter, setAddCatFilter] = useState('')
   const [addSearch, setAddSearch] = useState('')
 
-  const handleLogin = (t) => { sessionStorage.setItem('adminToken', t); setToken(t) }
+  const handleLogin = (t) => {
+    sessionStorage.setItem('adminToken', t); setToken(t)
+    window.dispatchEvent(new Event('adminAuthChange'))
+  }
   const handleLogout = async () => {
     try { await api.adminLogout(token) } catch {}
     sessionStorage.removeItem('adminToken'); setToken('')
+    window.dispatchEvent(new Event('adminAuthChange'))
   }
 
   const categoryOrder = useMemo(
