@@ -87,7 +87,8 @@ function AppShell() {
     api.categories().then(setCategories).catch(console.error)
   }, [])
   
-  // Load menu based on branch selection
+  // Load menu based on branch selection, and re-fetch when navigating to /menu
+  // so that admin availability changes are reflected immediately in Menu Preview
   useEffect(() => {
     setLoading(true)
     if (selectedBranch) {
@@ -105,7 +106,7 @@ function AppShell() {
         })
         .finally(() => setLoading(false))
     }
-  }, [selectedBranch])
+  }, [selectedBranch, location.pathname])
   
   // Scroll to top on route change
   useEffect(() => {
