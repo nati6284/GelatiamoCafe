@@ -4,6 +4,14 @@ import com.cafe.dto.*;
 import com.cafe.repository.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,4 +76,30 @@ public class PublicController {
   }
 
   @GetMapping("/menu/popular") public List<MenuItem> popular(){return menu.findByPopularTrueAndAvailableTrue();}
+
+  /**
+   * Proxies an external image URL through the backend so the browser can load it
+   * without CORS restrictions (used for print view).
+   * Usage: GET /api/image-proxy?url=https://...
+   */
+  @GetMapping("/image-proxy")
+  public ResponseEntity<byte[]> proxyImage(@RequestParam String url) {
+    try {
+      HttpClient client = HttpClient.newBuilder()
+          .followRedirects(HttpClient.Redirect.NORMAL)
+          .build();
+      HttpRequest req = HttpRequest.newBuilder()
+          .uri(URI.create(url))
+          .header("User-Agent", "Mozilla/5.0")
+          .GET()
+          .build();
+      HttpResponse<byte[]> resp = client.send(req, HttpResponse.BodyHandlers.ofByteArray());
+      String contentType = resp.headers().firstValue("Content-Type").orElse("image/jpeg");
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.parseMediaType(contentType));
+      return new ResponseEntity<>(resp.body(), headers, HttpStatus.OK);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+    }
+  }
 }

@@ -1,6 +1,55 @@
-import { cafeConfig } from '../config'
+import { useEffect, useState } from 'react'
+import { cafeConfig, API_BASE } from '../config'
+
+// Converts an image URL to a base64 data URL so it renders when printing
+async function toDataUrl(src, apiBase) {
+  // Already a data URL or contains base64 data, nothing to do
+  if (src.startsWith('data:') || src.includes('data:image')) return src.startsWith('data:') ? src : null
+  try {
+    // For external URLs, route through the backend proxy to avoid CORS blocks
+    // For relative paths (local public/ files), fetch directly
+    const fetchUrl = src.startsWith('http')
+      ? `${apiBase}/image-proxy?url=${encodeURIComponent(src)}`
+      : src
+    const res = await fetch(fetchUrl)
+    if (!res.ok) return src
+    const blob = await res.blob()
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  } catch {
+    return src
+  }
+}
 
 export default function PrintableMenu({ items, branch, categories }) {
+  const [imageMap, setImageMap] = useState({})
+
+  useEffect(() => {
+    if (!items || items.length === 0) return
+    const load = async () => {
+      const entries = await Promise.all(
+        items
+          .filter(item => {
+            if (!item.image) return false
+            const img = item.image.trim()
+            // Skip anything that's already a data URL or not a real URL/path
+            return !img.startsWith('data:') && !img.includes('data:image')
+          })
+          .map(async item => {
+            const img = item.image.trim()
+            const src = img.startsWith('http') ? img : img.startsWith('/') ? img : `/${img}`
+            const dataUrl = await toDataUrl(src, API_BASE)
+            return [item.id, dataUrl]
+          })
+      )
+      setImageMap(Object.fromEntries(entries))
+    }
+    load()
+  }, [items])
   // Group items by category in order
   const categoryOrder = categories && categories.length > 0
     ? categories.map(c => c.name)
@@ -61,7 +110,14 @@ export default function PrintableMenu({ items, branch, categories }) {
                 <div key={item.id} className="pm-item">
                   <div className="pm-item-img">
                     {item.image
-                      ? <img src={item.image.startsWith('http') ? item.image : `/${item.image}`} alt={item.name} />
+                      ? <img
+                          src={
+                            imageMap[item.id] ||
+                            (item.image.startsWith('data:') ? item.image :
+                              item.image.startsWith('http') ? item.image : `/${item.image}`)
+                          }
+                          alt={item.name}
+                        />
                       : <div className="pm-item-img-placeholder" />}
                   </div>
                   <div className="pm-item-info">

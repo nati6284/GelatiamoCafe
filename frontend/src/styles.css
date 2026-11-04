@@ -2681,6 +2681,22 @@ button:disabled{opacity:.55;cursor:not-allowed}
   .pm-grid { gap: 8px; }
   .pm-item { break-inside: avoid; page-break-inside: avoid; }
   .pm-category-title { break-after: avoid; page-break-after: avoid; }
+
+  .pm-item-img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    overflow: hidden;
+  }
+
+  .pm-item-img img {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 
