@@ -51,8 +51,8 @@ export default function ContactPage({ selectedBranch }) {
           <div className="contact-card">
             <span className="contact-icon"><Clock/></span>
             <h2>{t('hours')}</h2>
-            <p>{cafeConfig.openingHours}</p>
-            <p style={{fontSize: '14px', color: '#666'}}>Hours may vary by branch and on public holidays.</p>
+            <p>{activeBranch.openingHours || cafeConfig.openingHours}</p>
+            <p style={{fontSize: '14px', color: '#666'}}>Hours may vary on public holidays.</p>
           </div>
         </section>
         

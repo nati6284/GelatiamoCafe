@@ -706,7 +706,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 .footer-content{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:1fr 2fr 1fr 1fr;
   gap:40px;
   padding-bottom:40px;
   border-bottom:1px solid rgba(255,255,255,0.2);
@@ -777,6 +777,70 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
 .social-links svg{
   width:18px;
+}
+
+.footer-note{
+  font-size:10px !important;
+  opacity:0.75;
+}
+
+.footer-email{
+  margin-top:14px !important;
+}
+
+/* Branch list inside footer */
+.footer-branches{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px 24px;
+}
+
+.footer-branch{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.footer-branch-name{
+  font-size:12px;
+  font-weight:600;
+  color:#ffffff;
+  line-height:1.4;
+}
+
+.footer-branch-row{
+  font-size:11px;
+  color:rgba(255,255,255,0.85);
+  display:flex;
+  align-items:flex-start;
+  gap:5px;
+  line-height:1.5;
+}
+
+.footer-branch-icon{
+  flex-shrink:0;
+  margin-top:2px;
+  opacity:0.7;
+}
+
+.footer-branch-map{
+  font-size:10px;
+  color:rgba(255,255,255,0.7);
+  text-decoration:underline;
+  margin-top:1px;
+  display:inline-block;
+}
+
+.footer-branch-map:hover{
+  color:#ffffff;
+}
+
+.footer-branch-hours{
+  font-style:italic;
+  opacity:0.75;
 }
 
 .footer-bottom{
@@ -1787,6 +1851,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
   .footer{padding:50px 22px 20px}
   .footer-content{grid-template-columns:1fr;gap:30px}
   .footer-col{text-align:left}
+  .footer-branches{grid-template-columns:1fr}
   .footer-col .brand-logo{
     width:180px;
     height:auto;

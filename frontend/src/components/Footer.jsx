@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Instagram, Facebook } from 'lucide-react'
+import { Instagram, Facebook, MapPin, Phone, Clock } from 'lucide-react'
 import { useI18n } from '../i18n'
 import { cafeConfig } from '../config'
+import { api } from '../api'
 
 function TikTokIcon() {
   return (
@@ -13,66 +15,92 @@ function TikTokIcon() {
 
 export default function Footer() {
   const {t} = useI18n()
-  
+  const [branches, setBranches] = useState([])
+
+  useEffect(() => {
+    api.branches().then(setBranches).catch(() => {})
+  }, [])
+
   return (
     <footer className="footer">
       <div className="footer-content">
+
+        {/* Brand */}
         <div className="footer-col">
           <Link to="/" className="brand brand-light">
             <img src={cafeConfig.logo} alt="GELATIAMO" className="brand-logo"/>
           </Link>
           <p className="footer-tagline">{t('footer')}</p>
         </div>
-        
-        <div className="footer-col">
-          <h3>Contact Us</h3>
-          <p><strong>Phone:</strong> {cafeConfig.phone}</p>
-          <p><strong>Email:</strong> {cafeConfig.email}</p>
-          <p><strong>Address:</strong> {cafeConfig.address}</p>
+
+        {/* Branches */}
+        <div className="footer-col footer-col--branches">
+          <h3>Our Branches</h3>
+          {branches.length > 0 ? (
+            <ul className="footer-branches">
+              {branches.map(branch => (
+                <li key={branch.id} className="footer-branch">
+                  <span className="footer-branch-name">{branch.name}</span>
+                  {branch.address && (
+                    <span className="footer-branch-row">
+                      <MapPin size={11} className="footer-branch-icon"/>
+                      {branch.address}
+                    </span>
+                  )}
+                  {branch.phone && (
+                    <span className="footer-branch-row">
+                      <Phone size={11} className="footer-branch-icon"/>
+                      {branch.phone}
+                    </span>
+                  )}
+                  <span className="footer-branch-row footer-branch-hours">
+                    <Clock size={11} className="footer-branch-icon"/>
+                    {branch.openingHours || cafeConfig.openingHours}
+                  </span>
+                  {branch.mapUrl && (
+                    <a className="footer-branch-map" href={branch.mapUrl} target="_blank" rel="noreferrer">
+                      Open map ↗
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <>
+              <p><strong>Email:</strong> {cafeConfig.email}</p>
+              <p><strong>Address:</strong> {cafeConfig.address}</p>
+            </>
+          )}
         </div>
-        
-        <div className="footer-col">
+
+        {/* Hours */}
+        {/* <div className="footer-col">
           <h3>Hours</h3>
           <p>{cafeConfig.openingHours}</p>
-          <p style={{marginTop:'10px', fontSize:'10px', opacity:0.8}}>
-            Hours may vary on public holidays
-          </p>
-        </div>
-        
+          <p className="footer-note">Hours may vary by branch and on public holidays</p>
+        </div> */}
+
+        {/* Social */}
         <div className="footer-col">
           <h3>Follow Us</h3>
           <div className="social-links">
-            <a 
-              href={cafeConfig.instagram} 
-              target="_blank" 
-              rel="noreferrer" 
-              aria-label="Instagram"
-            >
+            <a href={cafeConfig.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
               <Instagram/>
             </a>
-            <a 
-              href={cafeConfig.facebook} 
-              target="_blank" 
-              rel="noreferrer" 
-              aria-label="Facebook"
-            >
+            <a href={cafeConfig.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
               <Facebook/>
             </a>
-            <a 
-              href={cafeConfig.tiktok} 
-              target="_blank" 
-              rel="noreferrer" 
-              aria-label="TikTok"
-            >
+            <a href={cafeConfig.tiktok} target="_blank" rel="noreferrer" aria-label="TikTok">
               <TikTokIcon/>
             </a>
           </div>
-          <p style={{marginTop:'15px', fontSize:'11px'}}>
+          <p className="footer-note" style={{marginTop:'15px'}}>
             Stay connected for updates and special offers
           </p>
         </div>
+
       </div>
-      
+
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} {cafeConfig.name}. All rights reserved.</span>
       </div>

@@ -22,8 +22,8 @@ export default function Home({items, onSelectItem, selectedBranch}) {
           <Link className="button button-outline" to="/contact">{t('contact')}</Link>
         </div>
         <div className="hero-meta">
-          <span><Clock size={16}/>{cafeConfig.openingHours}</span>
-          <span><MapPin size={16}/>{cafeConfig.address}</span>
+          <span><Clock size={16}/>{selectedBranch?.openingHours || cafeConfig.openingHours}</span>
+          <span><MapPin size={16}/>{selectedBranch?.address || cafeConfig.address}</span>
         </div>
       </div>
       <div className="hero-vertical">AUTHENTIC GELATO · ITALIAN TASTE</div>

@@ -342,7 +342,7 @@ export default function AdminPage() {
                       <div>
                         <strong>{branch.name}</strong>
                         <p>{branch.address}</p>
-                        <small>{branch.phone}</small>
+                        <small>{branch.phone}{branch.openingHours ? ` · ${branch.openingHours}` : ''}</small>
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
                         <button className="button button-small" onClick={() => openBranchMenu(branch)} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -454,6 +454,7 @@ export default function AdminPage() {
                   <div className="field"><label>Address *</label><textarea value={editingItem.address} rows="2" onChange={e => setEditingItem({ ...editingItem, address: e.target.value })} required /></div>
                   <div className="field"><label>Phone</label><input type="tel" value={editingItem.phone || ''} onChange={e => setEditingItem({ ...editingItem, phone: e.target.value })} /></div>
                   <div className="field"><label>Google Maps URL</label><input type="url" placeholder="https://maps.app.goo.gl/…" value={editingItem.mapUrl || ''} onChange={e => setEditingItem({ ...editingItem, mapUrl: e.target.value })} /></div>
+                  <div className="field"><label>Opening Hours</label><input type="text" placeholder="e.g. Every day · 8:00 AM – 10:00 PM" value={editingItem.openingHours || ''} onChange={e => setEditingItem({ ...editingItem, openingHours: e.target.value })} /></div>
                   <div className="field"><label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" checked={editingItem.active} onChange={e => setEditingItem({ ...editingItem, active: e.target.checked })}/> Active</label></div>
                   <div className="form-actions">
                     <button type="submit" className="button">Save Branch</button>
