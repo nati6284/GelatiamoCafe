@@ -1834,6 +1834,11 @@ button:disabled{opacity:.55;cursor:not-allowed}
     border-left:none;
     border-right:none;
   }
+  .branch-dropdown .branch-list{
+    max-height:calc(100dvh - 160px);
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+  }
   .hero{height:auto;min-height:620px}
   .hero-content{margin-left:25px;width:85%;padding:75px 0}
   .hero h1{font-size:clamp(46px,10vw,68px)}

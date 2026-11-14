@@ -35,8 +35,8 @@ export default function BranchSelector({ selectedBranch, onSelectBranch, branche
         if (onClose) onClose()
       }
     }
-    document.addEventListener('pointerdown', handleOutside)
-    return () => document.removeEventListener('pointerdown', handleOutside)
+    document.addEventListener('pointerup', handleOutside)
+    return () => document.removeEventListener('pointerup', handleOutside)
   }, [show])
 
   const handleSelect = (branch) => {
